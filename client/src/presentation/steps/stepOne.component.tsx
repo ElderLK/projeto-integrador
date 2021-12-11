@@ -20,9 +20,9 @@ function intersection(a: readonly string[], b: readonly string[]) {
   return a.filter((value) => b.indexOf(value) !== -1);
 }
 
-const sequences = ['A+', 'A-', 'B+', 'B-', 'C+', 'C-'];
+const sequences = ['A+', 'A-', 'B+', 'B-', 'A+B+', 'A-B-'];
 
-export const MovementsSequence: React.FC = () => {
+export const StepOne: React.FC = () => {
   const [checked, setChecked] = React.useState<readonly string[]>([]);
   const [left, setLeft] = React.useState<readonly string[]>(sequences);
   const [right, setRight] = React.useState<readonly string[]>([]);
@@ -58,7 +58,7 @@ export const MovementsSequence: React.FC = () => {
       <List
         sx={{
           width: 200,
-          height: 230,
+          height: 324,
           bgcolor: 'background.paper',
           overflow: 'auto',
         }}

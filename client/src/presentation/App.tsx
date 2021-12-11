@@ -39,11 +39,11 @@ function App() {
     <React.Fragment>
       <CssBaseline />
       <Steps />
-      <Checkbox
+      {/* <Checkbox
         checked={checked}
         onChange={handleChange}
         inputProps={{ 'aria-label': 'controlled' }}
-      />
+      /> */}
     </React.Fragment>
   );
 }

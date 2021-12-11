@@ -8,11 +8,17 @@ import {
   Typography,
 } from '@mui/material';
 
-import { MovementsSequence } from './stepOne.component';
+import { StepOne } from './stepOne.component';
+import { StepTwo } from './stepTwo.component';
+import { StepThree } from './stepThree.component';
+import { StepFour } from './stepFour.component';
+import { StepFive } from './stepFive.component';
 
 const steps = [
   'Selecione a sequência de movimentos',
-  'Mapeia as entradas do sistema',
+  'Mapeie as entradas/saídas do sistema',
+  'Teste das entradas/saídas',
+  'Esquema Pneumatico',
   'Execute a sequência',
 ];
 
@@ -40,7 +46,13 @@ export const Steps: React.FC = () => {
             optional?: React.ReactNode;
           } = {};
           return (
-            <Step key={label} {...stepProps}>
+            <Step
+              key={label}
+              {...stepProps}
+              onClick={() => {
+                setActiveStep(index);
+              }}
+            >
               <StepLabel {...labelProps}>{label}</StepLabel>
             </Step>
           );
@@ -48,18 +60,19 @@ export const Steps: React.FC = () => {
       </Stepper>
       {activeStep === steps.length ? (
         <React.Fragment>
-          <Typography sx={{ mt: 2, mb: 1 }}>
-            All steps completed - you&apos;re finished
-          </Typography>
+          <Typography sx={{ mt: 2, mb: 1 }}>Sequência executada.</Typography>
           <Box sx={{ display: 'flex', flexDirection: 'row', pt: 2 }}>
             <Box sx={{ flex: '1 1 auto' }} />
-            <Button onClick={handleReset}>Reset</Button>
+            <Button onClick={handleReset}>Reiniciar</Button>
           </Box>
         </React.Fragment>
       ) : (
         <React.Fragment>
-          {activeStep === 0 && <MovementsSequence />}
-          <Typography sx={{ mt: 2, mb: 1 }}>Step {activeStep + 1}</Typography>
+          {activeStep === 0 && <StepOne />}
+          {activeStep === 1 && <StepTwo />}
+          {activeStep === 2 && <StepThree />}
+          {activeStep === 3 && <StepFour />}
+          {activeStep === 4 && <StepFive />}
           <Box sx={{ display: 'flex', flexDirection: 'row', pt: 2 }}>
             <Button
               color="inherit"
@@ -67,11 +80,11 @@ export const Steps: React.FC = () => {
               onClick={handleBack}
               sx={{ mr: 1 }}
             >
-              Back
+              Retroceder
             </Button>
             <Box sx={{ flex: '1 1 auto' }} />
             <Button onClick={handleNext}>
-              {activeStep === steps.length - 1 ? 'Finish' : 'Next'}
+              {activeStep === steps.length - 1 ? 'Concluir' : 'Avançar'}
             </Button>
           </Box>
         </React.Fragment>
