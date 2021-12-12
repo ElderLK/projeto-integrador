@@ -20,7 +20,7 @@ function intersection(a: readonly string[], b: readonly string[]) {
   return a.filter((value) => b.indexOf(value) !== -1);
 }
 
-const sequences = ['A+', 'A-', 'B+', 'B-', 'A+B+', 'A-B-'];
+const sequences = ['A+', 'A-', 'B+', 'B-', 'A+B+', 'A-B-', 'A+B-', 'A-B+'];
 
 export const StepOne: React.FC = () => {
   const [checked, setChecked] = React.useState<readonly string[]>([]);

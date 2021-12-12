@@ -1,0 +1,30 @@
+<svg viewBox="0 0 303 77" fill="none" xmlns="http://www.w3.org/2000/svg">
+<g id="cilindro_dupla_acao">
+<g id="Group 2">
+<path id="path72" d="M2 2V60.8224" stroke="black" stroke-width="3.84" stroke-linecap="round"/>
+<path id="path78" d="M2 60.8224H178.467" stroke="black" stroke-width="3.84" stroke-linecap="round"/>
+<path id="path80" d="M178.467 60.8224V43.1752" stroke="black" stroke-width="3.84" stroke-linecap="round"/>
+<path id="path82" d="M178.467 19.6472V2" stroke="black" stroke-width="3.84" stroke-linecap="round"/>
+<path id="path84" d="M178.467 2H2" stroke="black" stroke-width="3.84" stroke-linecap="round"/>
+<g id="cilindro">
+<path id="path74" d="M26 2V60.8224" stroke="black" stroke-width="3.84" stroke-linecap="round"/>
+<path id="path76" d="M37.7663 2V60.8224" stroke="black" stroke-width="3.84" stroke-linecap="round"/>
+<path id="path86" d="M37.7663 43.1752H190.706" stroke="black" stroke-width="3.84" stroke-linecap="round"/>
+<path id="path88" d="M37.7663 19.6472H190.706" stroke="black" stroke-width="3.84" stroke-linecap="round"/>
+<path id="path152" d="M190.706 19.6472V43.1752" stroke="black" stroke-width="3.84" stroke-linecap="round"/>
+<path id="path154" d="M202.472 37.2944H190.706" stroke="black" stroke-width="3.84" stroke-linecap="round"/>
+<path id="path156" d="M202.472 25.528H190.706" stroke="black" stroke-width="3.84" stroke-linecap="round"/>
+</g>
+</g>
+<path id="sensor_inicio" d="M192 48.5C192 50.9052 189.845 53 187 53C184.155 53 182 50.9052 182 48.5C182 46.0948 184.155 44 187 44C189.845 44 192 46.0948 192 48.5Z" fill="#C4C4C4" stroke="black" stroke-width="2"/>
+<path id="sensor_fim" d="M302 48.5C302 50.9052 299.845 53 297 53C294.155 53 292 50.9052 292 48.5C292 46.0948 294.155 44 297 44C299.845 44 302 46.0948 302 48.5Z" fill="#C4C4C4" stroke="black" stroke-width="2"/>
+<g id="avanco">
+<path id="avanco_linha" d="M13.7664 60.8224V72.5842" stroke="black" stroke-width="3.84" stroke-linecap="round"/>
+<path id="avanco_plug" d="M17.5 73.5C17.5 75.0962 15.9978 76.5 14 76.5C12.0022 76.5 10.5 75.0962 10.5 73.5C10.5 71.9038 12.0022 70.5 14 70.5C15.9978 70.5 17.5 71.9038 17.5 73.5Z" fill="#C4C4C4" stroke="black"/>
+</g>
+<g id="recuo">
+<path id="recuo_linha" d="M166.706 60.8224V72.5842" stroke="black" stroke-width="3.84" stroke-linecap="round"/>
+<path id="recuo_plug" d="M170.5 73.5C170.5 75.0962 168.998 76.5 167 76.5C165.002 76.5 163.5 75.0962 163.5 73.5C163.5 71.9038 165.002 70.5 167 70.5C168.998 70.5 170.5 71.9038 170.5 73.5Z" fill="#C4C4C4" stroke="black"/>
+</g>
+</g>
+</svg>

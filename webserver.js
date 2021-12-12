@@ -49,14 +49,13 @@ function resetIO() {
 
 io.sockets.on('connection', function (socket) {
   // WebSocket Connection
-  var lightvalue = 0; //static variable for current status
 
   function handleChangeButtons(err, value, name) {
     if (err) {
       console.error('There was an error', err); //output error message to console
       return;
     }
-    socket.emit('limitStateChange', { [name]: value });
+    socket.emit('limitStateChange', { [name]: Boolean(value) });
   }
 
   // Watch for hardware interrupts on limitSwitchAStart
@@ -80,19 +79,46 @@ io.sockets.on('connection', function (socket) {
     if (!!data) {
       if (Number.isInteger(data.relayOne)) {
         relayOne.writeSync(data.relayOne);
+        socket.emit('relayStateChange', { relayOne: Boolean(data.relayOne) });
       }
       if (Number.isInteger(data.relayTwo)) {
         relayTwo.writeSync(data.relayTwo);
+        socket.emit('relayStateChange', { relayTwo: Boolean(data.relayTwo) });
       }
     }
-    console.log('relayStateChange data', data);
-    //get light switch status from client
-    // lightvalue = data;
-    // if (lightvalue != relayOne.readSync()) {
-    //   //only change relayOne if status has changed
-    //   relayOne.writeSync(lightvalue); //turn relayOne on or off
-    //   socket.emit('light', lightvalue);
-    // }
+  });
+
+  socket.on('executeSequence', function (data) {
+    switch (data) {
+      case 'A+':
+        relayOne.writeSync(1);
+        break;
+      case 'B+':
+        relayTwo.writeSync(1);
+        break;
+      case 'A-':
+        relayOne.writeSync(0);
+        break;
+      case 'B-':
+        relayTwo.writeSync(0);
+        break;
+      case 'A+B+':
+        relayOne.writeSync(1);
+        relayTwo.writeSync(1);
+        break;
+      case 'A-B-':
+        relayOne.writeSync(0);
+        relayTwo.writeSync(0);
+        break;
+      case 'A+B-':
+        relayOne.writeSync(1);
+        relayTwo.writeSync(0);
+        break;
+      case 'A-B+':
+        relayOne.writeSync(0);
+        relayTwo.writeSync(1);
+        break;
+    }
   });
 
   socket.on('statesReset', function (data) {

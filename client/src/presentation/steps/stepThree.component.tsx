@@ -21,6 +21,11 @@ export const StepThree: React.FC = () => {
     // subscribe to socket events
     socket.on('limitStateChange', (data) => {
       console.log('limitStateChange', data);
+      setState((current) => ({ ...current, ...data }));
+    });
+
+    socket.on('relayStateChange', (data) => {
+      setState((current) => ({ ...current, ...data }));
     });
 
     return () => {
@@ -68,7 +73,6 @@ export const StepThree: React.FC = () => {
                   socket.emit('relayStateChange', {
                     relayOne: Number(checked),
                   });
-                  setState((current) => ({ ...current, relayOne: checked }));
                 }}
                 inputProps={{ 'aria-label': 'controlled' }}
               />
@@ -86,10 +90,6 @@ export const StepThree: React.FC = () => {
                   socket.emit('relayStateChange', {
                     relayTwo: Number(checked),
                   });
-                  setState((current) => ({
-                    ...current,
-                    relayTwo: checked,
-                  }));
                 }}
                 inputProps={{ 'aria-label': 'controlled' }}
               />
@@ -103,7 +103,7 @@ export const StepThree: React.FC = () => {
             <td>
               <Switch
                 readOnly
-                checked={false}
+                checked={Boolean(state?.limitSwitchAStart)}
                 inputProps={{ 'aria-label': 'controlled' }}
               />
             </td>
@@ -116,7 +116,7 @@ export const StepThree: React.FC = () => {
             <td>
               <Switch
                 readOnly
-                checked={false}
+                checked={Boolean(state?.limitSwitchAEnd)}
                 inputProps={{ 'aria-label': 'controlled' }}
               />
             </td>
@@ -129,7 +129,7 @@ export const StepThree: React.FC = () => {
             <td>
               <Switch
                 readOnly
-                checked={false}
+                checked={Boolean(state?.limitSwitchBStart)}
                 inputProps={{ 'aria-label': 'controlled' }}
               />
             </td>
@@ -142,7 +142,7 @@ export const StepThree: React.FC = () => {
             <td>
               <Switch
                 readOnly
-                checked={false}
+                checked={Boolean(state?.limitSwitchBEnd)}
                 inputProps={{ 'aria-label': 'controlled' }}
               />
             </td>
