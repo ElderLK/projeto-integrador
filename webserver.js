@@ -89,36 +89,46 @@ io.sockets.on('connection', function (socket) {
   });
 
   socket.on('executeSequence', function (data) {
+    console.log('executeSequence', data);
     switch (data) {
       case 'A+':
         relayOne.writeSync(1);
+        socket.emit('relayStateChange', { relayOne: true });
         break;
       case 'B+':
         relayTwo.writeSync(1);
+        socket.emit('relayStateChange', { relayTwo: true });
         break;
       case 'A-':
         relayOne.writeSync(0);
+        socket.emit('relayStateChange', { relayOne: false });
         break;
       case 'B-':
         relayTwo.writeSync(0);
+        socket.emit('relayStateChange', { relayTwo: false });
         break;
       case 'A+B+':
         relayOne.writeSync(1);
         relayTwo.writeSync(1);
+        socket.emit('relayStateChange', { relayOne: true, relayTwo: true });
         break;
       case 'A-B-':
         relayOne.writeSync(0);
         relayTwo.writeSync(0);
+        socket.emit('relayStateChange', { relayOne: false, relayTwo: false });
         break;
       case 'A+B-':
         relayOne.writeSync(1);
         relayTwo.writeSync(0);
+        socket.emit('relayStateChange', { relayOne: true, relayTwo: false });
         break;
       case 'A-B+':
         relayOne.writeSync(0);
         relayTwo.writeSync(1);
+        socket.emit('relayStateChange', { relayOne: false, relayTwo: true });
         break;
     }
+    socket.emit('executedSequence', data);
   });
 
   socket.on('statesReset', function (data) {

@@ -12,13 +12,31 @@ type IOProps = {
   limitSwitchBEnd?: boolean;
 };
 
-export const StepFive: React.FC = () => {
+type Props = {
+  sequence: string[];
+};
+
+export const StepFive: React.FC<Props> = ({ sequence }: Props) => {
   const socket = React.useContext(SocketContext);
-  const [state, setState] = React.useState<IOProps>();
+  const [state, setState] = React.useState<IOProps>({});
+  const {
+    limitSwitchAStart,
+    limitSwitchAEnd,
+    limitSwitchBStart,
+    limitSwitchBEnd,
+  } = state;
+  const [btnDisabled, setBtnDisabled] = React.useState(false);
+  const [executedWebserver, setExecutedWebserver] = React.useState<string[]>(
+    []
+  );
+  const [completedSequence, setCompletedSequence] = React.useState<string[]>(
+    []
+  );
+
+  console.log('state', state);
 
   React.useEffect(() => {
     socket.on('limitStateChange', (data) => {
-      console.log('limitStateChange', data);
       setState((current) => ({ ...current, ...data }));
     });
 
@@ -26,13 +44,98 @@ export const StepFive: React.FC = () => {
       setState((current) => ({ ...current, ...data }));
     });
 
+    socket.on('executedSequence', (data) => {
+      setExecutedWebserver((current) => [...current, data]);
+    });
+
     return () => {
       socket.off('limitStateChange');
+      socket.off('relayStateChange');
       socket.emit('statesReset');
     };
   }, [socket]);
 
-  return (
+  const executeSequence = React.useCallback(
+    (action) => {
+      socket.emit('executeSequence', action);
+    },
+    [socket]
+  );
+
+  React.useEffect(() => {
+    let next = false;
+    switch (executedWebserver?.[executedWebserver.length - 1]) {
+      case 'A+':
+        if (limitSwitchAEnd) {
+          next = true;
+        }
+        break;
+      case 'B+':
+        if (limitSwitchBEnd) {
+          next = true;
+        }
+        break;
+      case 'A-':
+        if (limitSwitchAStart) {
+          next = true;
+        }
+        break;
+      case 'B-':
+        if (limitSwitchBStart) {
+          next = true;
+        }
+        break;
+      case 'A+B+':
+        if (limitSwitchAEnd && limitSwitchBEnd) {
+          next = true;
+        }
+        break;
+      case 'A-B-':
+        if (limitSwitchAStart && limitSwitchBStart) {
+          next = true;
+        }
+        break;
+      case 'A+B-':
+        if (limitSwitchAEnd && limitSwitchBStart) {
+          next = true;
+        }
+        break;
+      case 'A-B+':
+        if (limitSwitchAStart && limitSwitchBEnd) {
+          next = true;
+        }
+        break;
+    }
+
+    if (next) {
+      setCompletedSequence((current) => [
+        ...current,
+        executedWebserver?.[executedWebserver.length - 1],
+      ]);
+    }
+
+    if (
+      executedWebserver.length &&
+      executedWebserver.length < sequence.length
+    ) {
+      if (next) {
+        executeSequence(sequence[executedWebserver.length]);
+      }
+    } else if (executedWebserver.length === sequence.length && next) {
+      setBtnDisabled(false);
+      setExecutedWebserver([]);
+    }
+  }, [
+    executedWebserver,
+    sequence,
+    executeSequence,
+    limitSwitchAStart,
+    limitSwitchAEnd,
+    limitSwitchBStart,
+    limitSwitchBEnd,
+  ]);
+
+  return sequence.length ? (
     <Box>
       <Box
         sx={{
@@ -43,16 +146,26 @@ export const StepFive: React.FC = () => {
         }}
       >
         <Typography variant="h4" component="h2">
-          Sequência A+/A-/A+B+/B-
+          Sequência {sequence.join('/')}
         </Typography>
         <Button
           variant="contained"
-          disabled
+          onClick={() => {
+            setBtnDisabled(true);
+            setCompletedSequence([]);
+            executeSequence(sequence[0]);
+          }}
+          disabled={btnDisabled}
           sx={{ marginBottom: 1, marginLeft: 2 }}
         >
           Executar
         </Button>
       </Box>
+      {completedSequence.length && (
+        <Typography variant="h6" component="h4">
+          Etapas executadas {completedSequence.join('/')}
+        </Typography>
+      )}
       <Box sx={{ display: 'flex' }}>
         <Box
           sx={{
@@ -115,6 +228,12 @@ export const StepFive: React.FC = () => {
           <CilindroSVG style={{ overflow: 'visible' }} />
         </Box>
       </Box>
+    </Box>
+  ) : (
+    <Box mt={5}>
+      <Typography variant="subtitle1" color="error.main">
+        Volte para a primeira etapa e selecione uma sequência
+      </Typography>
     </Box>
   );
 };

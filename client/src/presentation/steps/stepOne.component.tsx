@@ -4,31 +4,40 @@ import {
   List,
   Card,
   Button,
-  Divider,
   ListItem,
   Checkbox,
-  CardHeader,
   ListItemText,
   ListItemIcon,
 } from '@mui/material';
 
 function not(a: readonly string[], b: readonly string[]) {
-  return a.filter((value) => b.indexOf(value) === -1);
+  return a
+    .filter((value) => b.indexOf(value.replace(/[0-9]/g, '')) === -1)
+    ?.map((v) => v.replace(/[0-9]/g, ''));
 }
 
 function intersection(a: readonly string[], b: readonly string[]) {
-  return a.filter((value) => b.indexOf(value) !== -1);
+  return a
+    .filter((value) => b.indexOf(value.replace(/[0-9]/g, '')) !== -1)
+    ?.map((v) => v.replace(/[0-9]/g, ''));
 }
 
 const sequences = ['A+', 'A-', 'B+', 'B-', 'A+B+', 'A-B-', 'A+B-', 'A-B+'];
 
-export const StepOne: React.FC = () => {
-  const [checked, setChecked] = React.useState<readonly string[]>([]);
-  const [left, setLeft] = React.useState<readonly string[]>(sequences);
-  const [right, setRight] = React.useState<readonly string[]>([]);
+type Props = {
+  handleCallbackSequence: (seq: string[]) => void;
+};
 
-  const leftChecked = intersection(checked, left);
+export const StepOne: React.FC<Props> = ({ handleCallbackSequence }: Props) => {
+  const [checked, setChecked] = React.useState<readonly string[]>([]);
+  const [right, setRight] = React.useState<string[]>([]);
+
+  const leftChecked = intersection(checked, sequences);
   const rightChecked = intersection(checked, right);
+
+  React.useEffect(() => {
+    handleCallbackSequence(right);
+  }, [right, right.length, handleCallbackSequence]);
 
   const handleToggle = (value: string) => () => {
     const currentIndex = checked.indexOf(value);
@@ -67,18 +76,18 @@ export const StepOne: React.FC = () => {
         role="list"
       >
         {items.map((value: string, idx) => {
-          const labelId = `${value}-${idx}`;
+          const labelId = `${value}${idx}`;
 
           return (
             <ListItem
-              key={value}
+              key={labelId}
               role="listitem"
               button
-              onClick={handleToggle(value)}
+              onClick={handleToggle(labelId)}
             >
               <ListItemIcon>
                 <Checkbox
-                  checked={checked.indexOf(value) !== -1}
+                  checked={checked.indexOf(labelId) !== -1}
                   tabIndex={-1}
                   disableRipple
                   inputProps={{
@@ -97,7 +106,7 @@ export const StepOne: React.FC = () => {
 
   return (
     <Grid container spacing={2} justifyContent="center" alignItems="center">
-      <Grid item>{customList('Choices', left)}</Grid>
+      <Grid item>{customList('Choices', sequences)}</Grid>
       <Grid item>
         <Grid container direction="column" alignItems="center">
           <Button

@@ -24,6 +24,11 @@ const steps = [
 
 export const Steps: React.FC = () => {
   const [activeStep, setActiveStep] = React.useState(0);
+  const [sequence, setSequence] = React.useState<string[]>([]);
+
+  const handleCallbackSequence = React.useCallback((seq: string[]) => {
+    setSequence(seq);
+  }, []);
 
   const handleNext = () => {
     setActiveStep((prevActiveStep) => prevActiveStep + 1);
@@ -68,11 +73,13 @@ export const Steps: React.FC = () => {
         </React.Fragment>
       ) : (
         <React.Fragment>
-          {activeStep === 0 && <StepOne />}
+          {activeStep === 0 && (
+            <StepOne handleCallbackSequence={handleCallbackSequence} />
+          )}
           {activeStep === 1 && <StepTwo />}
           {activeStep === 2 && <StepThree />}
           {activeStep === 3 && <StepFour />}
-          {activeStep === 4 && <StepFive />}
+          {activeStep === 4 && <StepFive sequence={sequence} />}
           <Box sx={{ display: 'flex', flexDirection: 'row', pt: 2 }}>
             <Button
               color="inherit"

@@ -20,7 +20,6 @@ export const StepThree: React.FC = () => {
 
     // subscribe to socket events
     socket.on('limitStateChange', (data) => {
-      console.log('limitStateChange', data);
       setState((current) => ({ ...current, ...data }));
     });
 
