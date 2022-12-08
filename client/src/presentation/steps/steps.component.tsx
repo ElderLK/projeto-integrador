@@ -13,6 +13,7 @@ import { StepTwo } from './stepTwo.component';
 import { StepThree } from './stepThree.component';
 import { StepFour } from './stepFour.component';
 import { StepFive } from './stepFive.component';
+import { useTheme } from '@mui/material/styles';
 
 const steps = [
   'Selecione a sequência de movimentos',
@@ -22,16 +23,25 @@ const steps = [
   'Execute a sequência',
 ];
 
+
 export const Steps: React.FC = () => {
+  const theme = useTheme();
   const [activeStep, setActiveStep] = React.useState(0);
   const [sequence, setSequence] = React.useState<string[]>([]);
+  const [msg, setMsg] = React.useState("")
+
 
   const handleCallbackSequence = React.useCallback((seq: string[]) => {
     setSequence(seq);
   }, []);
 
   const handleNext = () => {
-    setActiveStep((prevActiveStep) => prevActiveStep + 1);
+    if(sequence.length > 0) {
+      setMsg("")
+      setActiveStep((prevActiveStep) => prevActiveStep + 1);
+    } else {
+      setMsg("É necessário selecionar uma sequencia (etapa 1) para proseguir!")
+    }
   };
 
   const handleBack = () => {
@@ -44,7 +54,11 @@ export const Steps: React.FC = () => {
 
   return (
     <Box sx={{ width: '100%', padding: 10 }}>
-      <Stepper activeStep={activeStep}>
+      <Stepper activeStep={activeStep} sx={{
+        [theme.breakpoints.down(800)]: {
+          flexWrap: 'wrap',
+        },
+      }}>
         {steps.map((label, index) => {
           const stepProps: { completed?: boolean } = {};
           const labelProps: {
@@ -63,6 +77,9 @@ export const Steps: React.FC = () => {
           );
         })}
       </Stepper>
+      {
+        msg.length > 0 && <Typography color="error" sx={{ mt: 2, mb: 0 }}>{msg}</Typography>
+      }
       {activeStep === steps.length ? (
         <React.Fragment>
           <Typography sx={{ mt: 2, mb: 1 }}>Sequência executada.</Typography>

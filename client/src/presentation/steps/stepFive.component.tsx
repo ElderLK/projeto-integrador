@@ -1,5 +1,5 @@
 import React from 'react';
-import { Box, Typography, Button } from '@mui/material';
+import { Box, Typography, Button, Dialog, DialogTitle } from '@mui/material';
 import { ReactComponent as CilindroSVG } from 'presentation/assets/cilindro_dupla_acao.svg';
 import { SocketContext } from 'presentation/context/socket';
 
@@ -16,7 +16,32 @@ type Props = {
   sequence: string[];
 };
 
+export interface SimpleDialogProps {
+  open: boolean;
+  ciclo: string;
+  onClose: () => void;
+}
+
+function SimpleDialog(props: SimpleDialogProps) {
+  const { onClose, ciclo, open } = props;
+
+  const handleClose = () => {
+    onClose();
+  };
+
+
+  return (
+    <Dialog onClose={handleClose} open={open}>
+      <DialogTitle>Ciclo Finalizado: {ciclo}</DialogTitle>
+      <Button onClick={handleClose}>
+          OK
+      </Button>
+    </Dialog>
+  );
+}
+
 export const StepFive: React.FC<Props> = ({ sequence }: Props) => {
+  const [open, setOpen] = React.useState(false);
   const socket = React.useContext(SocketContext);
   const [state, setState] = React.useState<IOProps>({});
   const {
@@ -33,7 +58,11 @@ export const StepFive: React.FC<Props> = ({ sequence }: Props) => {
     []
   );
 
-  console.log('state', state);
+
+  const handleClose = () => {
+    setOpen(false);
+  };
+
 
   React.useEffect(() => {
     socket.on('limitStateChange', (data) => {
@@ -56,7 +85,7 @@ export const StepFive: React.FC<Props> = ({ sequence }: Props) => {
   }, [socket]);
 
   const executeSequence = React.useCallback(
-    (action) => {
+    (action: unknown) => {
       socket.emit('executeSequence', action);
     },
     [socket]
@@ -123,6 +152,7 @@ export const StepFive: React.FC<Props> = ({ sequence }: Props) => {
       }
     } else if (executedWebserver.length === sequence.length && next) {
       setBtnDisabled(false);
+      setOpen(true);
       setExecutedWebserver([]);
     }
   }, [
@@ -161,7 +191,7 @@ export const StepFive: React.FC<Props> = ({ sequence }: Props) => {
           Executar
         </Button>
       </Box>
-      {completedSequence.length && (
+      {completedSequence.length > 0 && (
         <Typography variant="h6" component="h4">
           Etapas executadas {completedSequence.join('/')}
         </Typography>
@@ -228,6 +258,11 @@ export const StepFive: React.FC<Props> = ({ sequence }: Props) => {
           <CilindroSVG style={{ overflow: 'visible' }} />
         </Box>
       </Box>
+      <SimpleDialog
+        ciclo={completedSequence.join('/')}
+        open={open}
+        onClose={handleClose}
+      />
     </Box>
   ) : (
     <Box mt={5}>
